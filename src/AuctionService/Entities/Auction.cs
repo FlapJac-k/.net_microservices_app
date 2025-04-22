@@ -9,6 +9,7 @@ public class Auction
     public int? SoldAmount { get; set; }
     public int? CurrentHighBid { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public required DateTime AuctionEnd { get; set; }
     public required Status Status { get; set; } = Status.Live;
     public required Item Item { get; set; }
