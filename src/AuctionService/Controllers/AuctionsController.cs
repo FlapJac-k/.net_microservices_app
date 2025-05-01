@@ -12,7 +12,8 @@ namespace AuctionService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuctionsController(AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint) : ControllerBase
+public class AuctionsController(AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint)
+    : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<AuctionDto>>> GetAllAuctions(string? date)
@@ -49,7 +50,7 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper, IPubli
         auction.Seller = "test";
 
         context.Auctions.Add(auction);
-        
+
         var newAuction = mapper.Map<AuctionDto>(auction);
 
         await publishEndpoint.Publish(mapper.Map<AuctionCreated>(newAuction));
@@ -80,6 +81,8 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper, IPubli
         auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
         auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
 
+        await publishEndpoint.Publish<AuctionDeleted>(new { Id = auction.Id.ToString() });
+
         var result = await context.SaveChangesAsync() > 0;
 
         if (result) return Ok();
@@ -97,6 +100,8 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper, IPubli
         // TODO: check seller == username
 
         context.Auctions.Remove(auction);
+
+        await publishEndpoint.Publish(mapper.Map<AuctionDeleted>(auction));
 
         var result = await context.SaveChangesAsync() > 0;
 
