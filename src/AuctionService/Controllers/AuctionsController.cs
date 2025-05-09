@@ -5,6 +5,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Contracts;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,14 +41,13 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper, IPubli
         return mapper.Map<AuctionDto>(auction);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<AuctionDto>> CreateAuction(CreateAuctionDto auctionDto)
     {
         var auction = mapper.Map<Auction>(auctionDto);
 
-        // ToDo: add current user as seller
-
-        auction.Seller = "test";
+        auction.Seller = User.Identity.Name;
 
         context.Auctions.Add(auction);
 
@@ -72,7 +72,7 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper, IPubli
 
         if (auction == null) return NotFound();
 
-        // ToDo: check seller == username
+        if (auction.Seller != User.Identity.Name) return Forbid();
 
         auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
         auction.Item.Model = updateAuctionDto.Model ?? auction.Item.Model;
@@ -81,7 +81,7 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper, IPubli
         auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
         auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
 
-        await publishEndpoint.Publish<AuctionDeleted>(new { Id = auction.Id.ToString() });
+        await publishEndpoint.Publish(mapper.Map<AuctionUpdated>(auction));
 
         var result = await context.SaveChangesAsync() > 0;
 
@@ -97,11 +97,11 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper, IPubli
 
         if (auction == null) return NotFound();
 
-        // TODO: check seller == username
+        if (auction.Seller != User.Identity.Name) return Forbid();
 
         context.Auctions.Remove(auction);
-
-        await publishEndpoint.Publish(mapper.Map<AuctionDeleted>(auction));
+        
+        await publishEndpoint.Publish<AuctionDeleted>(new { Id = auction.Id.ToString() });
 
         var result = await context.SaveChangesAsync() > 0;
 
