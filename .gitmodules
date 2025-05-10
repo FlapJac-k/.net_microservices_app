@@ -1,0 +1,3 @@
+[submodule "frontend/web-app"]
+	path = frontend/web-app
+	url = https://github.com/FlapJac-k/microservices_nextjs.git
