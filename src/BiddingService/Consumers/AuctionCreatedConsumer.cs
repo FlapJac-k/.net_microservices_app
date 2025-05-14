@@ -9,6 +9,7 @@ public class AuctionCreatedConsumer : IConsumer<AuctionCreated>
 {
     public async Task Consume(ConsumeContext<AuctionCreated> context)
     {
+        Console.WriteLine("---> Consuming Auction created");
         var auction = new Auction()
         {
             ID = context.Message.Id.ToString(),
