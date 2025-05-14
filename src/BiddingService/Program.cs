@@ -1,3 +1,4 @@
+using BiddingService.Consumers;
 using MongoDB.Driver;
 using MongoDB.Entities;
 using MassTransit;
@@ -11,6 +12,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("bids", false));
 
     x.UsingRabbitMq((context, cfg) =>
