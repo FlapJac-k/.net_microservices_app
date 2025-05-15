@@ -10,6 +10,7 @@ COPY src/SearchService/SearchService.csproj src/SearchService/SearchService.cspr
 COPY src/GateWayService/GateWayService.csproj src/GateWayService/GateWayService.csproj
 COPY src/Contracts/Contracts.csproj src/Contracts/Contracts.csproj
 COPY src/IdentitiyService/IdentitiyService.csproj src/IdentitiyService/IdentitiyService.csproj
+COPY src/BiddingService/BiddingService.csproj src/BiddingService/BiddingService.csproj
 
 # Restore package deps
 RUN dotnet restore Microservices.sln
