@@ -11,6 +11,7 @@ COPY src/GateWayService/GateWayService.csproj src/GateWayService/GateWayService.
 COPY src/Contracts/Contracts.csproj src/Contracts/Contracts.csproj
 COPY src/IdentitiyService/IdentitiyService.csproj src/IdentitiyService/IdentitiyService.csproj
 COPY src/BiddingService/BiddingService.csproj src/BiddingService/BiddingService.csproj
+COPY src/NotificationService/NotificationService.csproj src/NotificationService/NotificationService.csproj
 
 
 # Restore package deps

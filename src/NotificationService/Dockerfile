@@ -17,13 +17,13 @@ COPY src/NotificationService/NotificationService.csproj src/NotificationService/
 RUN dotnet restore Microservices.sln
 
 # Copy the app folder over
-COPY src/BiddingService src/BiddingService
+COPY src/NotificationService src/NotificationService
 COPY src/Contracts src/Contracts
-WORKDIR /app/src/BiddingService
+WORKDIR /app/src/NotificationService
 RUN dotnet publish -c Release -o /app/src/out
 
 # build run time image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build /app/src/out .
-ENTRYPOINT ["dotnet", "BiddingService.dll"]
+ENTRYPOINT ["dotnet", "NotificationService.dll"]
